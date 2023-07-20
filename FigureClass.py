@@ -36,7 +36,7 @@ class Figure:
         fig, ax = plt.subplots()
         ax.plot(x_data, y_data, **kwargs)
 
-    def LoadData(self, file_path, x_data_name = "", y_data_name = ""):
+    def load_csv_data(self, file_path, x_data_name = "", y_data_name = ""):
         if (os.path.isfile(file_path) == False):
             warnings.warn("Not a valid file name", UserWarning)
             return [[], []]
@@ -63,8 +63,17 @@ class Figure:
         
         if ~(savename.endswith(f'.{ext}')):
             savename += f'.{ext}'
-            
-        self.ax.figure.savefig(savename, format=ext, dpi=dpi)
+        
+        if loc != "":
+            if (os.path.isfile(loc) == False):
+                savename = os.path.join(loc, savename)                
+            else:
+                print(f"loc argument '{loc}' is not a valid file name")
+        try:
+            self.ax.figure.savefig(savename, format=ext, dpi=dpi)
+        except Exception as e:
+            print(f"Error: Unable to save\nException: {str(e)}")
+                
         
     def show_legend(self, loc = 'best'):
         self.ax.legend(loc = loc)
